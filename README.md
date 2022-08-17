@@ -1,0 +1,2 @@
+# Shinelogger
+A logging Application
