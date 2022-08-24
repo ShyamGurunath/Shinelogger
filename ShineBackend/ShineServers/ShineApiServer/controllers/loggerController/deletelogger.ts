@@ -5,7 +5,7 @@ import sendLoggerToLogFlusherServer from "../../WocketClients/wocketLogFLusherCl
 
 const deletelogger = async (ctx: RouterContext) => {
   try {
-    const logger = await db.collection(LOGGERCOLLECTION).findOne({
+    const logger = await db!.collection(LOGGERCOLLECTION).findOne({
       loggerName: ctx.params.loggerName,
     });
     if (!logger) {
@@ -15,12 +15,12 @@ const deletelogger = async (ctx: RouterContext) => {
       };
       return;
     }
-    await db.collection(LOGGERCOLLECTION).deleteOne({
+    await db!.collection(LOGGERCOLLECTION).deleteOne({
       loggerName: ctx.params.loggerName,
     });
     // check if ctx.params.loggerName exists in db.listCollectionNames
-    if (ctx.params.loggerName in db.listCollections().map((c) => c.name)) {
-      await db.collection(ctx.params.loggerName).drop();
+    if (ctx.params.loggerName in db!.listCollections().map((c) => c.name)) {
+      await db!.collection(ctx.params.loggerName).drop();
     }
     if (logger.isFlushLogs) {
       const logflusherData = logger;

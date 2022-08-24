@@ -9,7 +9,7 @@ const deletelogbylogger = async (ctx: RouterContext) => {
   try {
     const loggerName = ctx.params.loggerName;
     const id = ctx.params.id;
-    const loggerCollection = await db.collection<Logger>(LOGGERCOLLECTION)
+    const loggerCollection = await db!.collection<Logger>(LOGGERCOLLECTION)
       .find().toArray();
     // check if loggerName exists in db.listCollectionNames
     if (!loggerCollection.map((c) => c.loggerName).includes(loggerName)) {

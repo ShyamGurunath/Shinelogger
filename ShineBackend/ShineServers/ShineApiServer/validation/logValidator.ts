@@ -1,6 +1,6 @@
 import { bodyKeysLog, levels } from "./validationConstants.ts";
 
-const logValidator = async (body) => {
+const logValidator = async (body:any) => {
   if (!body.loggerName) return { msg: "loggerName is missing", status: 400 };
   if (body.loggerName && typeof body.loggerName != "string") {
     return { msg: "loggerName is not a string", status: 400 };

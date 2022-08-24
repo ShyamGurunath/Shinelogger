@@ -1,6 +1,6 @@
 import { bodyKeysLogger, levels } from "./validationConstants.ts";
 
-const logvalidatorcreate = (body) => {
+const logvalidatorcreate = (body:any) => {
   if (!body.loggerName) return { msg: "loggerName is missing", status: 400 };
   if (
     body.isRollingFile === undefined || (typeof body.isRollingFile != "boolean")

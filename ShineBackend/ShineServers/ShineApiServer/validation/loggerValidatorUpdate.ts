@@ -1,6 +1,6 @@
 import { bodyKeysLogger, levels } from "./validationConstants.ts";
 
-const loggervalidatorupdate = (body) => {
+const loggervalidatorupdate = (body:any) => {
   if (
     body.isRollingFile && body.isRollingFile == true &&
     !body.rollingLogDirectorypath

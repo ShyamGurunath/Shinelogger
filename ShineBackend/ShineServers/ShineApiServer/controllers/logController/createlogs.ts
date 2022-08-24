@@ -42,7 +42,7 @@ const createlog = async (ctx: RouterContext) => {
           ? await saveLogsToRollingFile(
             x.loggerName,
             JSON.stringify(log),
-            logger.rollingLogDirectorypath,
+            logger.rollingLogDirectorypath!,
           )
           : null;
         if (logger.isEmail && logger.emailLogLevel === x.logLevel) {

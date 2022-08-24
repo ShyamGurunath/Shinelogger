@@ -5,7 +5,7 @@ import { LOGGERCOLLECTION } from "../../../Shared/constants.ts";
 
 const getAllloggers = async (ctx: RouterContext) => {
   try {
-    const allLoggers = await db.collection<Logger>(LOGGERCOLLECTION).find()
+    const allLoggers = await db!.collection<Logger>(LOGGERCOLLECTION).find()
       .toArray();
     ctx.response.status = 200;
     ctx.response.body = {

@@ -2,7 +2,7 @@ import { SmtpClient } from "../Shared/deps.ts";
 import { isOnline } from "../Shared/deps.ts";
 import { log } from "../Shared/deps.ts";
 
-const sendEmail = async (data) => {
+const sendEmail = async (data:any) => {
   try {
     const isInternetConnected = await isOnline();
     if (!isInternetConnected) {
@@ -28,13 +28,14 @@ const sendEmail = async (data) => {
       to: data.emailToPrimary,
       subject: "ShineLogger Bot " + "- LogLevel " + data.emailLogLevel +
         " Reached",
-      content: "Hello,\n\n" +
-        "This is a message from the ShineLogger Bot.\n\n" +
-        "The log level " + data.emailLogLevel + " has been reached.\n\n" +
-        `This loggerName - ${data.loggerName} \n\n` +
-        "The log level is " + data.logLevel + "\n\n" + "The Logmessage is " +
-        data.logmessage + "\n\n" + "AdditionInfo - " + data.additionalInfo +
-        "\n\n" + "Thank you,\n" + "ShineLogger Bot",
+      content: "<h2>Hello from ShineLogger Bot,</h2><br><br>" +
+        "<h4>This is a message from the ShineLogger Bot.</h4><br><br>" +
+        "The log level " + data.emailLogLevel + " has been reached.<br><br>" +
+        `This loggerName - ${data.loggerName} <br><br>` +
+        "The log level is " + data.logLevel + "<br><br>" + "The Logmessage is " +
+        data.logmessage + "<br><br>" + "AdditionInfo - " + data.additionalInfo +
+        "<br><br>" + "Thank you,<br>" + "ShineLogger Bot",
+
     });
 
     // send the email to secondary email if present
@@ -44,13 +45,13 @@ const sendEmail = async (data) => {
         to: data.emailToSecondary,
         subject: "ShineLogger Bot " + "- LogLevel " + data.emailLogLevel +
           " Reached",
-        content: "Hello,\n\n" +
-          "This is a message from the ShineLogger Bot.\n\n" +
-          "The log level " + data.emailLogLevel + " has been reached.\n\n" +
-          `This loggerName - ${data.loggerName} \n\n` +
-          "The log level is " + data.logLevel + "\n\n" + "The Logmessage is " +
-          data.logmessage + "\n\n" + "AdditionInfo -" + data.additionalInfo +
-          "\n\n" + "Thank you,\n" + "ShineLogger Bot",
+        content: "<h2>Hello from ShineLogger Bot,</h2><br><br>" +
+            "<h4>This is a message from the ShineLogger Bot.</h4><br><br>" +
+            "The log level " + data.emailLogLevel + " has been reached.<br><br>" +
+            `This loggerName - ${data.loggerName} <br><br>` +
+            "The log level is " + data.logLevel + "<br><br>" + "The Logmessage is " +
+            data.logmessage + "<br><br>" + "AdditionInfo - " + data.additionalInfo +
+            "<br><br>" + "Thank you,<br>" + "ShineLogger Bot",
       });
     }
 
