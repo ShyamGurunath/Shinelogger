@@ -5,7 +5,7 @@ import { LOGGERCOLLECTION } from "../../../Shared/constants.ts";
 
 const getlogger = async (ctx: RouterContext) => {
   try {
-    const logger = await db.collection<Logger>(LOGGERCOLLECTION).findOne({
+    const logger = await db!.collection<Logger>(LOGGERCOLLECTION).findOne({
       loggerName: ctx.params.loggerName,
     });
     if (!logger) {

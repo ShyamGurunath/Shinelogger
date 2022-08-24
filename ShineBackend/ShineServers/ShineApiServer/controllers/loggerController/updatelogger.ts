@@ -2,7 +2,6 @@ import db from "../../utils/mongoClient.ts";
 import { RouterContext } from "https://deno.land/x/oak/mod.ts";
 import Logger from "../../interfaces/logger.ts";
 import { LOGGERCOLLECTION } from "../../../Shared/constants.ts";
-import { encrypt } from "../../../Shared/cipher.ts";
 import sendLoggerToLogFlusherServer from "../../WocketClients/wocketLogFLusherClient.ts";
 
 const updatelogger = async (ctx: RouterContext) => {
@@ -15,8 +14,8 @@ const updatelogger = async (ctx: RouterContext) => {
     } else {
       const x = await ctx.request.body().value;
       const loggerName = ctx.params.loggerName;
-      const mainLogger = await db.collection<Logger>(LOGGERCOLLECTION);
-      const logger = await db.collection<Logger>(LOGGERCOLLECTION).findOne({
+      const mainLogger = await db!.collection<Logger>(LOGGERCOLLECTION);
+      const logger = await db!.collection<Logger>(LOGGERCOLLECTION).findOne({
         loggerName: loggerName,
       });
       if (!logger) {

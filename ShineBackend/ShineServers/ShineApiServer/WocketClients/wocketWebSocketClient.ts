@@ -4,7 +4,7 @@ import {
   SHINEWEBSOCKETPORT,
 } from "../../Shared/constants.ts";
 
-const sendLogToWebSocketServer = (data) => {
+const sendLogToWebSocketServer = (data:any) => {
   const websocket = new WebSocket(
     `ws://${SHINEWEBSOCKETHOST}:${SHINEWEBSOCKETPORT}/wss` + "?clientName=" +
       data.loggerName,

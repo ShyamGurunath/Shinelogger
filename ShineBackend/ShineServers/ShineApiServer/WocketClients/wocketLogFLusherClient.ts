@@ -4,7 +4,7 @@ import {
   SHINEWEBSOCKETPORT,
 } from "../../Shared/constants.ts";
 
-const sendLoggerToLogFlusherServer = (data) => {
+const sendLoggerToLogFlusherServer = (data:any) => {
   const websocket = new WebSocket(
     `ws://${SHINEWEBSOCKETHOST}:${SHINEWEBSOCKETPORT}/wss?clientName=logFlusher`,
   );

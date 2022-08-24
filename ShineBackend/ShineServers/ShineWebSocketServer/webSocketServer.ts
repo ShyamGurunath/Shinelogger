@@ -4,7 +4,7 @@ import { log } from "../Shared/deps.ts";
 
 const server = new Server({
   hostname: SHINEWEBSOCKETHOST,
-  port: SHINEWEBSOCKETPORT,
+  port: SHINEWEBSOCKETPORT as number,
   protocol: "ws",
   path: "/wss",
 });
@@ -12,8 +12,8 @@ const server = new Server({
 server.on("connect", (e) => {
   log.info(`New Client Connected to WebSocket Server ${e.detail.id}`);
   const client = server.clients.get(e.detail.id);
-  client.uuid = e.detail.queryParams.get("clientName");
-  log.info(`UUID Updated for client ${e.detail.id}  - ${client.uuid}`); // intellisense helps you here
+  client!.uuid = e.detail.queryParams.get("clientName")!;
+  log.info(`UUID Updated for client ${e.detail.id}  - ${client!.uuid}`); // intellisense helps you here
 });
 
 server.on("disconnect", (e) => {
@@ -22,9 +22,9 @@ server.on("disconnect", (e) => {
 
 server.on("message", (e) => {
   server.clients.forEach((client) => {
-    if (client.uuid === e.detail.packet.loggerName) {
+    if (client.uuid as string === (e.detail.packet.loggerName! as string)) {
       log.info(`Sending Message to Client ${client.uuid}`);
-      server.to("message", e.detail.packet, client.id);
+      server.to("message", e.detail.packet as string, client.id);
     }
   });
 });
@@ -33,7 +33,7 @@ server.on("logFlusher", (e) => {
   server.clients.forEach((client) => {
     if (client.uuid === "logFlusher") {
       log.info(`Sending Message to logFlusher Client ${client.uuid}`);
-      server.to("logFlusher", e.detail.packet, client.id);
+      server.to("logFlusher", e.detail.packet as string, client.id);
     }
   });
 });
@@ -42,7 +42,7 @@ server.on("sendEmailServer", (e) => {
   server.clients.forEach((client) => {
     if (client.uuid === "sendEmailServer") {
       log.info(`Sending Message to SendEmail Client ${client.uuid}`);
-      server.to("sendEmailServer", e.detail.packet, client.id);
+      server.to("sendEmailServer", e.detail.packet as string, client.id);
     }
   });
 });

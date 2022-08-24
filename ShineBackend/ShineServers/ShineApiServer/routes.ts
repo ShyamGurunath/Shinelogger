@@ -11,15 +11,19 @@ import findOnelog from "./controllers/logController/findOnelog.ts";
 
 const router = new Router();
 
-router.post("/api/create-logger", createLogger)
-  .get("/api/get-all-loggers", getAllloggers)
-  .get("/api/get-logger/:loggerName", getLogger)
-  .delete("/api/delete-logger/:loggerName", deleteLogger)
-  .put("/api/update-logger/:loggerName", updateLogger);
+const api_version = "v1";
 
-router.post("/api/log/create-log", createLog)
-  .get("/api/log/get-logs/:loggerName", getlogsbylogger)
-  .get("/api/log/find-one-log/:loggerName/:id", findOnelog)
-  .delete("/api/log/flush-logs/:loggerName", flushlogsbylogger);
+const basepath = `/api/${api_version}/`;
+
+router.post(basepath+"logger/create-logger", createLogger)
+  .get(basepath+"logger/get-all-loggers", getAllloggers)
+  .get(basepath+"logger/get-logger/:loggerName", getLogger)
+  .delete(basepath+"logger/delete-logger/:loggerName", deleteLogger)
+  .put(basepath+"logger/update-logger/:loggerName", updateLogger);
+
+router.post(basepath+"log/create-log", createLog)
+  .get(basepath+"log/get-logs/:loggerName", getlogsbylogger)
+  .get(basepath+"log/find-one-log/:loggerName/:id", findOnelog)
+  .delete(basepath+"log/flush-logs/:loggerName", flushlogsbylogger);
 
 export default router;

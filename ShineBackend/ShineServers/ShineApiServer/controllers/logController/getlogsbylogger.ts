@@ -7,7 +7,7 @@ import Log from "../../interfaces/log.ts";
 const getlogsbylogger = async (ctx: RouterContext) => {
   try {
     const loggerName = ctx.params.loggerName;
-    const loggerCollection = await db.collection<Logger>(LOGGERCOLLECTION)
+    const loggerCollection = await db!.collection<Logger>(LOGGERCOLLECTION)
       .find().toArray();
     // check if loggerName exists in db.listCollectionNames
     if (!loggerCollection.map((c) => c.loggerName).includes(loggerName)) {
@@ -17,7 +17,7 @@ const getlogsbylogger = async (ctx: RouterContext) => {
       };
       return;
     }
-    const logs = await db.collection<Log>(loggerName).find().toArray();
+    const logs = await db!.collection<Log>(loggerName).find().toArray();
     ctx.response.status = 200;
     ctx.response.body = {
       msg: "Logs found",

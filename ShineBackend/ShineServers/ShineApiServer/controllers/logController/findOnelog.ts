@@ -9,7 +9,7 @@ const findOnelog = async (ctx: RouterContext) => {
   try {
     const loggerName = await ctx.params.loggerName;
     const id = await ctx.params.id;
-    const loggerCollection = await db.collection<Logger>(LOGGERCOLLECTION)
+    const loggerCollection = await db!.collection<Logger>(LOGGERCOLLECTION)
       .find().toArray();
     // check if loggerName exists in db.listCollectionNames
     if (!loggerCollection.map((c) => c.loggerName).includes(loggerName)) {
@@ -19,7 +19,7 @@ const findOnelog = async (ctx: RouterContext) => {
       };
       return;
     } else {
-      const log = await db.collection<Log>(loggerName).findOne({
+      const log = await db!.collection<Log>(loggerName).findOne({
         _id: new mongo.ObjectId(id),
       });
       if (!log) {

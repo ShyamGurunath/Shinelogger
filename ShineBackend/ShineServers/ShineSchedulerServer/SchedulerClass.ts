@@ -9,9 +9,9 @@ class SchedulerClass {
 
   public cronExpression: string;
 
-  public constructor(public classKey: string, public cronExpression: string) {
-    this.classKey = classKey;
-    this.cronExpression = cronExpression;
+  public constructor(public loggerName: string, public cronExpressionString: string) {
+    this.classKey = loggerName;
+    this.cronExpression = cronExpressionString;
   }
 
   createCronJob = (cronExpression: string) => {
@@ -54,14 +54,14 @@ const enrollFlusher = async (classKey: string, cronExpression: string) => {
 
 const removeFlusher = async (classKey: string) => {
   const scheduler = Schedulerlist.get(classKey);
-  await scheduler.stop();
+  await scheduler!.stop();
   Schedulerlist.delete(classKey);
   log.info(`Removed flusher for ${classKey} at ${new Date()} `);
 };
 
 const updateFlusher = async (classKey: string, cronExpression: string) => {
   const scheduler = Schedulerlist.get(classKey);
-  await scheduler.stop();
+  await scheduler!.stop();
   Schedulerlist.delete(classKey);
   await enrollFlusher(classKey, cronExpression);
 };
