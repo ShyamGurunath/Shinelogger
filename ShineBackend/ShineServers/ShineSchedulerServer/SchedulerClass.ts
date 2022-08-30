@@ -1,5 +1,4 @@
 import { Cron } from "../Shared/deps.ts";
-import { SHINESERVERHOST, SHINESERVERPORT } from "../Shared/constants.ts";
 import { log } from "../Shared/deps.ts";
 
 const Schedulerlist = new Map<string, Cron>();
@@ -24,7 +23,7 @@ class SchedulerClass {
   cronOperation = async () => {
     try {
       const response = await fetch(
-        `http://${SHINESERVERHOST}:${SHINESERVERPORT}/api/log/flush-logs/${this.classKey}`,
+        `http://shine_api_gateway/flushlogs?loggerName=${this.classKey}`,
         {
           method: "DELETE",
         },
@@ -70,7 +69,7 @@ const enrollFlusherAtStart = async () => {
   // get api call to get all the schedulers
   try {
     const url =
-      `http://${SHINESERVERHOST}:${SHINESERVERPORT}/api/get-all-loggers`;
+      `http://shine_api_gateway/getloggers`;
     const response = await fetch(url, {
       method: "GET",
     });
@@ -79,13 +78,19 @@ const enrollFlusherAtStart = async () => {
       if (data.data.length > 0) {
         for (const logger of data.data) {
           if (logger.isFlushLogs) {
-            log.info(
-              `Enrolling flusher for ${logger.loggerName} at ${new Date()} `,
-            );
-            await enrollFlusher(
-              logger.loggerName,
-              logger.flushIntervalCronExpression,
-            );
+            if(Schedulerlist.get(logger.loggerName) == null){
+              log.info(
+                  `Enrolling flusher for ${logger.loggerName} at ${new Date()} `,
+              );
+              await enrollFlusher(
+                  logger.loggerName,
+                  logger.flushIntervalCronExpression,
+              );
+
+            }
+            else {
+              log.info(`Logger ${logger.loggerName} already Exists, Skipping !`)
+            }
           }
         }
       }

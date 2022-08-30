@@ -5,13 +5,12 @@ import {
   Schedulerlist,
   updateFlusher,
 } from "./SchedulerClass.ts";
-import { SHINEWEBSOCKETHOST, SHINEWEBSOCKETPORT } from "../Shared/constants.ts";
 import { log, WebSocketClient } from "../Shared/deps.ts";
 
 const flushLogsSocketClientConnect = () => {
   // WebSocketClient
   const client = new WebSocketClient(
-    `ws://${SHINEWEBSOCKETHOST}:${SHINEWEBSOCKETPORT}/wss?clientName=logFlusher`,
+    `ws://shine_api_gateway/wss?clientName=logFlusher`,
   );
 
   client.onopen = () => {
@@ -69,5 +68,7 @@ const flushLogsSocketClientConnect = () => {
 };
 
 log.info("LogFlusher Server Started");
-await enrollFlusherAtStart();
+setTimeout(async () => {
+  await enrollFlusherAtStart();
+},1000);
 await flushLogsSocketClientConnect();

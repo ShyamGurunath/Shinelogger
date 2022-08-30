@@ -1,6 +1,6 @@
 const sendlogtoUI = () => {
   const websocket = new WebSocket(
-    "ws://localhost:8001/wss" + "?clientName=" + Deno.args[0],
+    "ws://localhost/wss" + "?clientName=" + Deno.args[0],
   );
   websocket.onopen = () => {
     console.log("Connected to Server");

@@ -1,5 +1,9 @@
+
+import {Context} from "../../Shared/deps.ts";
+
 // add a middleware to accept only json data in content-type application/json
-const onlyJsonContentTypeMiddleware = async (context, next) => {
+
+const onlyJsonContentTypeMiddleware = async (context:Context, next:Function) => {
   // check if request is POST or PUT
   if (context.request.method === "POST" || context.request.method === "PUT") {
     if (context.request.headers.get("Content-Type") !== "application/json") {

@@ -1,12 +1,11 @@
 import sendEmail from "./sendEmail.ts";
 import { log } from "../Shared/deps.ts";
 import { WebSocketClient } from "../Shared/deps.ts";
-import { SHINEWEBSOCKETHOST, SHINEWEBSOCKETPORT } from "../Shared/constants.ts";
 
 const sendEmailSocketClientConnect = () => {
   // WebSocketClient
   const client = new WebSocketClient(
-    `ws://${SHINEWEBSOCKETHOST}:${SHINEWEBSOCKETPORT}/wss?clientName=sendEmailServer`,
+    `ws://shine_api_gateway/wss?clientName=sendEmailServer`,
   );
 
   client.onopen = () => {

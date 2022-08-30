@@ -4,7 +4,7 @@ import { log } from "../Shared/deps.ts";
 
 const server = new Server({
   hostname: SHINEWEBSOCKETHOST,
-  port: SHINEWEBSOCKETPORT as number,
+  port: parseInt(SHINEWEBSOCKETPORT),
   protocol: "ws",
   path: "/wss",
 });
@@ -22,7 +22,7 @@ server.on("disconnect", (e) => {
 
 server.on("message", (e) => {
   server.clients.forEach((client) => {
-    if (client.uuid as string === (e.detail.packet.loggerName! as string)) {
+    if (client.uuid as string === (e.detail.packet.loggerName as string)) {
       log.info(`Sending Message to Client ${client.uuid}`);
       server.to("message", e.detail.packet as string, client.id);
     }
