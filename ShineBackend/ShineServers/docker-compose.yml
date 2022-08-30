@@ -1,0 +1,72 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  shine_api_gateway:
+    container_name: shine_api_gateway
+    image: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./Nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - shine_api_server
+  shine_api_server:
+    container_name: shine_api_server
+    build:
+      context: .
+      dockerfile: Dockerfile-api-server
+    restart: always
+    ports:
+      - "8500"
+    volumes:
+      - logvolume:/var/log
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+  shine_websocket_server:
+    container_name: shine_websocket_server
+    build:
+      context: .
+      dockerfile: Dockerfile-websocker-server
+    restart: always
+    ports:
+      - "8501"
+    env_file:
+      - .env
+  shine_email_server:
+    container_name: shine_email_server
+    build:
+      context: .
+      dockerfile: Dockerfile-email-server
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      shine_websocket_server:
+        condition: service_started
+      shine_api_gateway:
+        condition: service_started
+  shine_logflusher_server:
+    container_name: shine_logflusher_server
+    build:
+      context: .
+      dockerfile: Dockerfile-logflusher-server
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - shine_api_gateway
+      - shine_api_server
+      - shine_websocket_server
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    restart: always
+    ports:
+      - "27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+volumes:
+  logvolume: {}

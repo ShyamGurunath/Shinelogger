@@ -1,8 +1,9 @@
 import logValidator from "../validation/logValidator.ts";
 import logvalidatorcreate from "../validation/loggerValidatorCreate.ts";
 import loggervalidatorupdate from "../validation/loggerValidatorUpdate.ts";
+import {Context} from "../../Shared/deps.ts";
 
-const controllersApiValidationMiddleware = async (context, next) => {
+const controllersApiValidationMiddleware = async (context:Context, next:Function) => {
   // check if request is POST or PUT
   try {
     if (context.request.method === "POST" || context.request.method === "PUT") {

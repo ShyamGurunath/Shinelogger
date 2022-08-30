@@ -1,6 +1,7 @@
 import { SmtpClient } from "../Shared/deps.ts";
 import { isOnline } from "../Shared/deps.ts";
 import { log } from "../Shared/deps.ts";
+import {decrypt} from "../Shared/cipher.ts";
 
 const sendEmail = async (data:any) => {
   try {
@@ -18,8 +19,10 @@ const sendEmail = async (data:any) => {
       hostname: "smtp.gmail.com",
       port: 465,
       username: data.emailFrom,
-      password: data.emailFromPassword,
+      password: await decrypt(data.emailFromPassword),
     };
+
+    log.info(connectconfig);
 
     await client.connectTLS(connectconfig);
     // send the email

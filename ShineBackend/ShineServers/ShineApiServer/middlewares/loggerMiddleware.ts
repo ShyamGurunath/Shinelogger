@@ -1,6 +1,7 @@
-import { bold, cyan, green } from "../../Shared/deps.ts";
+import {bold, cyan, green} from "../../Shared/deps.ts";
+import {Context} from "../../Shared/deps.ts";
 
-const loggerMiddleware = async (context, next) => {
+const loggerMiddleware = async (context:Context, next:Function) => {
   await next();
   const rt = context.response.headers.get("X-Response-Time");
   console.log(

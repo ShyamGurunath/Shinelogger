@@ -3,6 +3,7 @@ import { RouterContext } from "https://deno.land/x/oak/mod.ts";
 import Logger from "../../interfaces/logger.ts";
 import { LOGGERCOLLECTION } from "../../../Shared/constants.ts";
 import sendLoggerToLogFlusherServer from "../../WocketClients/wocketLogFLusherClient.ts";
+import {encrypt} from "../../../Shared/cipher.ts";
 
 const updatelogger = async (ctx: RouterContext) => {
   try {
@@ -27,7 +28,7 @@ const updatelogger = async (ctx: RouterContext) => {
       }
       if (logger) {
         const emailFromPassword = x.emailFromPassword != undefined
-          ? x.emailFromPassword
+          ? encrypt(x.emailFromPassword)
           : null;
         const updateData = {
           description: x.description ?? logger.description,

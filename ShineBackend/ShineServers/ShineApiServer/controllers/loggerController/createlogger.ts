@@ -4,6 +4,7 @@ import { RouterContext } from "https://deno.land/x/oak/mod.ts";
 import { LOGGERCOLLECTION } from "../../../Shared/constants.ts";
 import Log from "../../interfaces/log.ts";
 import sendLoggerToLogFlusherServer from "../../WocketClients/wocketLogFLusherClient.ts";
+import {encrypt} from "../../../Shared/cipher.ts";
 
 const createlogger = async (ctx: RouterContext) => {
   try {
@@ -15,7 +16,7 @@ const createlogger = async (ctx: RouterContext) => {
     } else {
       const x = await ctx.request.body().value;
       // loggerCollection is the name of the collection in mongo db where we will store the loggers
-      const loggerCollection = await db.collection<Logger>(LOGGERCOLLECTION);
+      const loggerCollection = await db!.collection<Logger>(LOGGERCOLLECTION);
       // NewCollection is created under the name of the x.loggerName to store logController
       await db!.collection<Log>(x.loggerName);
       // check if loggerName already exists
@@ -43,7 +44,7 @@ const createlogger = async (ctx: RouterContext) => {
         emailFrom: x.emailFrom === undefined ? "" : x.emailFrom,
         emailFromPassword: x.emailFromPassword === undefined
           ? ""
-          : x.emailFromPassword,
+          : await encrypt(x.emailFromPassword),
         emailToSecondary: x.emailToSecondary === undefined
           ? ""
           : x.emailToSecondary,

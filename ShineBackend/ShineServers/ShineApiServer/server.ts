@@ -24,4 +24,6 @@ app.use(router.allowedMethods());
 
 log.info(`ShineLogger Server Started on ${SHINESERVERHOST}:${SHINESERVERPORT}`);
 
-app.listen({ port: SHINESERVERPORT! });
+app.listen({ port: parseInt(SHINESERVERPORT) }).catch((err) => {
+    log.error(err);
+})
