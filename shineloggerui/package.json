@@ -11,8 +11,14 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.9",
+    "@chakra-ui/react": "^2.3.1",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@storybook/preset-create-react-app": "^4.1.2",
+    "axios": "^0.27.2",
     "classnames": "^2.3.1",
+    "framer-motion": "^7.2.1",
     "next": "12.2.5",
     "proptypes": "^1.1.0",
     "react": "18.2.0",
@@ -29,7 +35,7 @@
     "@storybook/manager-webpack5": "^6.5.10",
     "@storybook/react": "^6.5.10",
     "@storybook/testing-library": "^0.0.13",
-    "@tailwindcss/postcss7-compat": "^2.2.17",
+    "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
     "@types/node": "18.7.6",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
