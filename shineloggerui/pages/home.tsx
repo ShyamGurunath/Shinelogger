@@ -29,7 +29,8 @@ const Home: NextPage = ({data}:any) => {
     const [isLoggerShown, setisLoggerShown] = useState(false);
   // search state
     const [search, setSearch] = useState('');
-    const [filteredData, setFilteredData] =  useState(data.data);
+
+    const [filteredData, setFilteredData] = useState(data.data);
     const handleSearch = useCallback(e => {
         setSearch(e.target.value);
         const filtereddata = data.data.filter((logger:any) => {
@@ -49,6 +50,7 @@ const Home: NextPage = ({data}:any) => {
   <>
     <Header />
       <Text fontSize="30" fontWeight="bold" className="mt-2 ml-6">Loggers</Text>
+
       { data == null ? <Text>Loading...</Text> :
     <div className="m-5 p-2">
         <HStack>
