@@ -10,7 +10,15 @@ import {SearchIcon} from "@chakra-ui/icons";
 // This gets called on every request
 export async function getServerSideProps() {
   // Fetch data from external API
-  const data =  await axios.get(`http://localhost/getloggers`).then(res => res.data).then(data => data).catch(err => console.log(err));
+    var data;
+    try {
+        data =  await axios.get(`http://localhost/getloggers`).then(res => res.data).then(data => data).catch(err => console.log(err));
+    }
+      catch (err) {
+        console.error(err)
+          const data = null;
+        return { props: { data } }
+      }
   // Pass data to the page via props
   return { props: { data } }
 }
@@ -21,6 +29,7 @@ const Home: NextPage = ({data}:any) => {
     const [isLoggerShown, setisLoggerShown] = useState(false);
   // search state
     const [search, setSearch] = useState('');
+
     const [filteredData, setFilteredData] = useState(data.data);
     const handleSearch = useCallback(e => {
         setSearch(e.target.value);
@@ -41,9 +50,10 @@ const Home: NextPage = ({data}:any) => {
   <>
     <Header />
       <Text fontSize="30" fontWeight="bold" className="mt-2 ml-6">Loggers</Text>
+
+      { data == null ? <Text>Loading...</Text> :
     <div className="m-5 p-2">
         <HStack>
-
         <InputGroup className="lg:">
             {/* eslint-disable-next-line react/no-children-prop */}
             <InputLeftAddon children={<SearchIcon   />} />
@@ -56,7 +66,7 @@ const Home: NextPage = ({data}:any) => {
         {
             filteredData.length > 0 ? <LoggerTable data={filteredData} /> : <Text fontSize="20" fontWeight="bold" className="mt-2 ml-6">No Loggers Found</Text>
         }
-    </div>
+    </div> }
   </>
   )
 }
