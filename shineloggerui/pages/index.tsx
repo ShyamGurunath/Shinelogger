@@ -1,36 +1,38 @@
-import type { NextPage } from 'next'
-import { useEffect,useState,useCallback,useContext,useMemo } from 'react'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import {NextPage} from "next";
+import {useRouter} from "next/router";
+import {useEffect} from "react";
+import { motion } from 'framer-motion';
 
-const Home: NextPage = () => {
-  const [count, setCount] = useState(0)
+const InitPage : NextPage = () => {
+    const router = useRouter();
 
-    const increment = useCallback(() => {
-        setCount(prevState => {
-            return prevState + 1
-        })
-    }
-    ,[count])
-
-    const decrement = useCallback(() => {
-        if(count > 0){
-            setCount(prevState => {
-                return prevState - 1
-            })
-        }
-    }   ,[count])
-
-  return (
-  <>
-    <div className={`flex justify-center`}>
-      <h2 className={`text-7xl`}>{count}</h2>
-        <button onClick={increment} className={`text-5xl text-blue-50 rounded pl-5 pr-5 pt-1 pb-1 m-2 border-amber-900 border-2 bg-green-300`}>+</button>
-        <button onClick={decrement} className={`text-5xl text-blue-50 rounded pl-5 pr-5 pt-1 pb-1 m-2 border-red-600 border-2 bg-red-400`}>-</button>
-    </div>
-  </>
-  )
+    useEffect(() => {
+        setTimeout(() => {
+            router.push('/home');
+        }, 3000);
+    });
+    return (
+        <div className="w-screen h-screen bg-gray-900">
+            <div className="flex justify-center items-center">
+                <div className="flex flex-col items-center">
+                    <img src="/logo.png" alt="logo" className="w-50 h-50"/>
+                    <motion.h1
+                        animate={{  opacity: 1, scale: 1 }}
+                        transition={{
+                            duration: 1,
+                            delay: 0.3,
+                            ease: [0.5, 0.71, 1, 1.5],
+                        }}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        whileHover={{ scale: 1.2 }}
+                        className="text-white text-3xl font-bold mt-5"
+                    >
+                        ShineLogger Studio
+                    </motion.h1>
+                </div>
+            </div>
+        </div>
+    )
 }
 
-export default Home
+export default InitPage;
