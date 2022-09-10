@@ -1,5 +1,5 @@
 
-import {Box, Heading, useDisclosure} from '@chakra-ui/react'
+import {Badge, Box, Heading, useDisclosure,Text} from '@chakra-ui/react'
 import { EditIcon,DeleteIcon } from '@chakra-ui/icons'
 import { IconButton } from '@chakra-ui/react'
 import axios from "axios";
@@ -13,15 +13,18 @@ import {
     AlertDialogCloseButton,
     Button
 } from '@chakra-ui/react'
-import {useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import { useToast } from '@chakra-ui/react'
 import {useRouter} from "next/router";
+import UpdateLogger from './UpdateLogger';
 
 
 
-const LoggerCard = ({ title,desc,...rest }:{title:string,desc:string}) => {
+const LoggerCard = ({ title,desc,rest}:{title:string,desc:string,rest:any}) => {
+
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const cancelRef = useRef()
+    const [isUpdateLoggerShown, setisUpdateLoggerShown] = useState(false);
+    const cancelRef = useRef(null)
     const toast = useToast()
     const router = useRouter()
 
@@ -69,7 +72,7 @@ const LoggerCard = ({ title,desc,...rest }:{title:string,desc:string}) => {
                 onClose();
             }
         }
-        catch (e) {
+        catch (e:any) {
             toast({
                 title: 'Error',
                 description: e.message,
@@ -83,26 +86,38 @@ const LoggerCard = ({ title,desc,...rest }:{title:string,desc:string}) => {
 
     }
 
-    const onEdit = async () => {
+    useEffect(() => {
 
+    },[isUpdateLoggerShown]);
+
+    const onEdit = async () => {
+        setisUpdateLoggerShown(true);
     }
 
     const onView = async () => {
-        console.log(title);
         router.push(`/logger/${title}`)
     }
 
-  return (
+  // @ts-ignore
+    // @ts-ignore
+    return (
 
       <>
-      <Box p={10} shadow='md' borderWidth='2px' {...rest} width={'300px'}>
+      <Box className={""} p={8}  shadow='md' borderWidth='2px' width={'300px'} minH={250} maxH={250}>
         <Heading fontSize='xl' onClick={onView} className="cursor-pointer">{title}</Heading>
-          <p className="overflow-hidden truncate w-50  pt-2 pb-2">{desc}</p>
-         <IconButton aria-label='EditIcon' icon={<EditIcon  color="orange" boxSize={5} />} className="mr-2 mt-2" />
-          <IconButton aria-label='DeleteIcon' onClick={onOpen} icon={<DeleteIcon  color="red" boxSize={5} />}  className="mt-2" />
+          <Text className={"truncate overflow-hidden w-30 py-2"} fontSize={20}>
+              {
+                  desc.length > 50 ? desc.substring(0,50) + "..." : desc
+              }
+          </Text>
+          <Badge className="mt-2 pt-2 pb-2 lg:text-blue border ">{rest}</Badge>
+          <br/>
+
+         <IconButton aria-label='EditIcon' onClick={onEdit} icon={<EditIcon  color="orange" boxSize={5} />} className="mb-2 p-2 mt-3" />
+          <IconButton aria-label='DeleteIcon' onClick={onOpen} icon={<DeleteIcon  color="red" boxSize={5} />}  className="ml-2 p-2 mb-2 mt-3" />
       </Box>
     <AlertDialog
-        motionPreset='slideInBottom'
+        motionPreset='slideInRight'
         leastDestructiveRef={cancelRef}
         onClose={onClose}
         isOpen={isOpen}
@@ -126,6 +141,9 @@ const LoggerCard = ({ title,desc,...rest }:{title:string,desc:string}) => {
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
+          {
+                isUpdateLoggerShown ? <UpdateLogger title={title} onopen={isUpdateLoggerShown} setUpdateloggerShown={setisUpdateLoggerShown} /> : null
+          }
       </>
   );
 }

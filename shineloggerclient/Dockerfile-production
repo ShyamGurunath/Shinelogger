@@ -1,0 +1,23 @@
+FROM node:alpine as dependencies
+WORKDIR /shineloggerui
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+FROM node:alpine as builder
+WORKDIR /shineloggerui
+COPY . .
+COPY --from=dependencies /shineloggerui/node_modules ./node_modules
+RUN yarn build
+
+FROM node:alpine as runner
+WORKDIR /shineloggerui
+ENV NODE_ENV production
+# If you are using a custom next.config.js file, uncomment this line.
+COPY --from=builder /shineloggerui/next.config.js ./
+COPY --from=builder /shineloggerui/public ./public
+COPY --from=builder /shineloggerui/.next ./.next
+COPY --from=builder /shineloggerui/node_modules ./node_modules
+COPY --from=builder /shineloggerui/package.json ./package.json
+
+EXPOSE 3000
+CMD ["yarn", "start"]

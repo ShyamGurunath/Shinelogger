@@ -2,6 +2,7 @@ import {NextPage} from "next";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
 import { motion } from 'framer-motion';
+import "react-datepicker/dist/react-datepicker.css"
 
 const InitPage : NextPage = () => {
     const router = useRouter();

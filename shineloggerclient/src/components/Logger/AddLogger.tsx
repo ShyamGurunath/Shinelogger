@@ -1,15 +1,18 @@
 import {useRef,useState} from "react";
 import {Drawer,DrawerBody,DrawerContent,DrawerOverlay,DrawerCloseButton,DrawerHeader} from "@chakra-ui/modal";
-import {useToast,Button,Stack,Box,FormLabel,Input,InputGroup,InputLeftAddon,InputRightAddon,Select,Textarea,DrawerFooter} from "@chakra-ui/react";
+import {useToast,Button,Stack,Box,FormLabel,Input,InputGroup,InputLeftAddon,Select,Textarea,DrawerFooter} from "@chakra-ui/react";
 import { Checkbox } from '@chakra-ui/react'
 import {EmailIcon} from "@chakra-ui/icons";
 import axios from "axios";
+import {router} from "next/client";
 import {useRouter} from "next/router";
 
-const AddLogger = ({onopen}:{onopen:boolean}) => {
+
+const AddLogger = ({onopen,setAddloggerShown}:{onopen:boolean,setAddloggerShown:any}) => {
+
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(onopen);
-    const firstField = useRef();
+    const firstField = useRef(null);
     const [isEmailAlert, setIsEmailAlert] = useState(false);
     const [isRollingFile, setIsRollingFile] = useState(false);
     const [isFlushLogs, setIsFlushLogs] = useState(false);
@@ -30,7 +33,8 @@ const AddLogger = ({onopen}:{onopen:boolean}) => {
     const toast = useToast();
 
     const closeDrawer = () => {
-        setIsOpen(current => !current);
+        setAddloggerShown(false);
+        setIsOpen(onopen);
     }
 
     const handleEmailAlert = () => {
@@ -52,7 +56,7 @@ const AddLogger = ({onopen}:{onopen:boolean}) => {
             loggerName: data.loggerName,
             description: data.description,
             isRollingFile: isRollingFile,
-            rollingLogDirectorypath: data.rollingLogDirectorypath == null ? '' : data.rollingLogDirectorypath,
+            rollingLogDirectorypath: isRollingFile ? `../Logs` : '../Logs',
             isEmail: isEmailAlert,
             isFlushLogs: isFlushLogs,
             emailLogLevel:data.emailLogLevel == null ? '' : data.emailLogLevel,
@@ -69,43 +73,42 @@ const AddLogger = ({onopen}:{onopen:boolean}) => {
                 'http://localhost:8500/api/v1/logger/create-logger', loggerData, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'API_TYPE': 'logger',
+                        'API_TYPE': 'logger'
                     }
                 }
             ).then(res => {
                 status = res.status;
                 msg = res.data.msg.toString();
-                console.log(res.data);
             }).catch(err => console.log(err));
 
             if (status === 201) {
 
                 toast({
                     title: 'Success',
-                    description: 'Logger Created Successfully',
+                    description: msg,
                     status: 'success',
-                    duration: 200,
+                    duration: 400,
                     isClosable: true,
                     position: 'bottom-left'
                 });
-                // closeDrawer();
-                // setTimeout(() => {
-                //     router.reload();
-                // }, 200);
+                closeDrawer();
+                setTimeout(() => {
+                    router.reload();
+                }, 200);
             }
             else {
+                console.log(msg);
                 toast({
-                    title: 'Try Entering Valid Data',
-                    description: msg,
+                    title: "Error",
+                    description: "Try Entering Valid data",
                     status: 'error',
                     duration: 5000,
                     isClosable: true,
                     position: 'bottom-left'
                 });
-                //closeDrawer();
             }
         }
-        catch (e) {
+        catch (e:any) {
             toast({
                 title: 'Error',
                 description: e.message,
@@ -119,6 +122,8 @@ const AddLogger = ({onopen}:{onopen:boolean}) => {
         }
 
 
+
+    // @ts-ignore
     return (
         <>
             <Drawer
@@ -160,31 +165,38 @@ const AddLogger = ({onopen}:{onopen:boolean}) => {
                                         ? (
                                             <>
                                             <InputGroup className="mt-1">
-                                            <InputLeftAddon children='FromEmail' />
+                                            <InputLeftAddon>FromEmail</InputLeftAddon>
                                             <Input type='email' placeholder='Enter Email' onChange={(e) =>{
                                                 setData({...data,emailFrom:e.target.value})
                                             }}/>
                                             </InputGroup>
                                             <InputGroup className="mt-1">
-                                            <InputLeftAddon children='Password' />
+                                                <InputLeftAddon>AppPassword</InputLeftAddon>
+
                                             <Input type='password' placeholder='Enter AppPassword' onChange={(e) => {
                                                 setData({...data,emailFromPassword:e.target.value})
                                             }}/>
                                             </InputGroup>
                                                 <InputGroup className="mt-1">
-                                                    <InputLeftAddon children="LogLevel" />
-                                                    <Input type='text' placeholder='Enter LogLevel' onChange={(e) => {
+                                                    <InputLeftAddon>LogLevel</InputLeftAddon>
+                                                    <Select placeholder='Select LogLevel' onChange={(e:any) => {
                                                         setData({...data,emailLogLevel:e.target.value})
-                                                    }}/>
+                                                    }}>
+                                                        <option value='INFO'>INFO</option>
+                                                        <option value='ERROR'>ERROR</option>
+                                                        <option value='DEBUG'>DEBUG</option>
+                                                        <option value='CRITICAL'>CRITICAL</option>
+                                                        <option value='WARNING'>WARNING</option>
+                                                    </Select>
                                                 </InputGroup>
                                             <InputGroup className="mt-1">
-                                            <InputLeftAddon children={<EmailIcon />} />
+                                                <InputLeftAddon>{<EmailIcon />}</InputLeftAddon>
                                             <Input type='email' placeholder='Enter PrimaryToEmail' onChange={(e) => {
-                                                setData({...data,emailToPrimary:e.target.value})
                                             }}/>
                                             </InputGroup>
                                             <InputGroup className="mt-1">
-                                            <InputLeftAddon children={<EmailIcon />} />
+                                                <InputLeftAddon>{<EmailIcon />}</InputLeftAddon>
+
                                             <Input type='email' placeholder='Enter SecondaryToEmail' onChange={(e) => {
                                                 setData({...data,emailToSecondary:e.target.value})
                                             }}/>
@@ -203,9 +215,8 @@ const AddLogger = ({onopen}:{onopen:boolean}) => {
                                         ? (
                                             <>
                                                 <InputGroup className="mt-1">
-                                                    <InputLeftAddon children='Dir' />
-                                                    <Input type='text' placeholder='Enter Directory' onChange={(e) => {
-                                                        setData({...data,rollingLogDirectorypath:e.target.value})
+                                                    <InputLeftAddon>Dir</InputLeftAddon>
+                                                    <Input type='text' placeholder='Enter Directory' value={"../Logs"} disabled onChange={(e) => {
                                                     }}/>
                                                 </InputGroup>
                                                 </>
@@ -220,7 +231,7 @@ const AddLogger = ({onopen}:{onopen:boolean}) => {
                                         ? (
                                             <>
                                                 <InputGroup className="mt-1">
-                                                    <InputLeftAddon children='TimeInterval' />
+                                                    <InputLeftAddon>TimeInterval</InputLeftAddon>
                                                     <Input type='text' placeholder='Enter a CronExpression' onChange={(e) => {
                                                         setData({...data,flushIntervalCronExpression:e.target.value})
                                                     }} />
