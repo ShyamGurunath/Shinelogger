@@ -59,7 +59,7 @@ services:
     env_file:
       - .env
     environment:
-        WAIT_HOSTS: mongodb:27017,  shine_api_server:8500, shine_websocket_server:8501
+      WAIT_HOSTS: mongodb:27017,  shine_api_server:8500, shine_websocket_server:8501
     depends_on:
       - shine_api_gateway
       - shine_api_server
@@ -77,12 +77,13 @@ services:
     container_name: shine_logger_client
     build:
       context: ../../shineloggerclient/
-      dockerfile: Dockerfile-production
+      dockerfile: Dockerfile-development
     restart: always
     volumes:
       - logvolume:/var/log
+      - ../../shineloggerclient/:/app
     ports:
-        - "3000:3000"
+      - "3000:3000"
     environment:
       WAIT_HOSTS: shine_api_server:8500
     depends_on:

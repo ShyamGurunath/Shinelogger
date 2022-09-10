@@ -23,6 +23,13 @@ const logValidator = async (body:any) => {
       status: 400,
     };
   }
+  if(!Object.keys(body).every((key) => bodyKeysLog.includes(key))){
+    return {
+      msg:
+        `Body has extra keys, Specify only ${bodyKeysLog}`,
+      status: 400,
+    };
+  }
   return {
     msg: "Validation Successful",
     status: 200,

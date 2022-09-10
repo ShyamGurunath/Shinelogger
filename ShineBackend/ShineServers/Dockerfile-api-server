@@ -1,7 +1,14 @@
 FROM denoland/deno:alpine-1.24.3
 
+## Add the wait script to the image
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+
+RUN chmod +x /wait
+
 
 WORKDIR /shineapiserver/Shared
+RUN mkdir "../Logs"
+
 
 # Cache the dependencies as a layer (the following two steps are re-run only when deps.ts is modified).
 # Ideally cache deps.ts will download and compile _all_ external files used in main.ts.
@@ -10,6 +17,8 @@ COPY Shared/deps.ts .
 COPY Shared/constants.ts .
 
 COPY Shared/cipher.ts .
+
+COPY Shared/logsHandler.ts .
 
 
 RUN deno cache deps.ts
@@ -22,4 +31,4 @@ ADD ShineApiServer .
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
 RUN deno cache server.ts
 
-CMD ["run", "--allow-net","--allow-env","--allow-read","--allow-write", "server.ts"]
+CMD /wait && deno run --allow-net --allow-read --allow-env --allow-write  server.ts

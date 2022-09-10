@@ -1,10 +1,12 @@
-import { Application, log } from "../Shared/deps.ts";
+import { Application } from "../Shared/deps.ts";
+import  logging  from "../Shared/logsHandler.ts";
 import router from "./routes.ts";
 import { SHINESERVERHOST, SHINESERVERPORT } from "../Shared/constants.ts";
 import loggerMiddleware from "./middlewares/loggerMiddleware.ts";
 import responseTimeMiddleware from "./middlewares/responseTimeMiddleware.ts";
 import onlyJsonContentTypeMiddleware from "./middlewares/onlyJsonContentTypeMiddleware.ts";
 import controllersApiValidationMiddleware from "./middlewares/controllersApiValidationMiddleware.ts";
+import { oakCors } from "../Shared/deps.ts";
 
 const app = new Application();
 
@@ -18,12 +20,14 @@ app.use(onlyJsonContentTypeMiddleware);
 
 // contollers api validation middleware
 app.use(controllersApiValidationMiddleware);
-
+app.use(oakCors({
+    origin: "*",
+}));
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-log.info(`ShineLogger Server Started on ${SHINESERVERHOST}:${SHINESERVERPORT}`);
+logging.info(`ShineLogger Server Started on ${SHINESERVERHOST}:${SHINESERVERPORT}`);
 
 app.listen({ port: parseInt(SHINESERVERPORT) }).catch((err) => {
-    log.error(err);
+    logging.error(err);
 })

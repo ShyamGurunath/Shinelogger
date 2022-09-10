@@ -1,4 +1,4 @@
-import { log } from "../../Shared/deps.ts";
+import  logging  from "../../Shared/logsHandler.ts";
 import {
   SHINEWEBSOCKETHOST,
   SHINEWEBSOCKETPORT,
@@ -10,7 +10,7 @@ const sendLogToWebSocketServer = (data:any) => {
       data.loggerName,
   );
   websocket.onopen = () => {
-    log.info("Internal Log Client Connected to WebSocketServer");
+    logging.info("Internal Log Client Connected to WebSocketServer");
     websocket.send(JSON.stringify({
       channel: "message",
       message: data,
@@ -18,7 +18,7 @@ const sendLogToWebSocketServer = (data:any) => {
     websocket.close();
   };
   websocket.onclose = () => {
-    log.info("Internal Log Client Connection closed");
+    logging.info("Internal Log Client Connection closed");
   };
 };
 

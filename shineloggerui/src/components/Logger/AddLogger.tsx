@@ -4,9 +4,10 @@ import {useToast,Button,Stack,Box,FormLabel,Input,InputGroup,InputLeftAddon,Inpu
 import { Checkbox } from '@chakra-ui/react'
 import {EmailIcon} from "@chakra-ui/icons";
 import axios from "axios";
+import {useRouter} from "next/router";
 
 const AddLogger = ({onopen}:{onopen:boolean}) => {
-
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(onopen);
     const firstField = useRef();
     const [isEmailAlert, setIsEmailAlert] = useState(false);
@@ -61,21 +62,60 @@ const AddLogger = ({onopen}:{onopen:boolean}) => {
             emailFromPassword:data.emailFromPassword == null ? '' : data.emailFromPassword,
             flushIntervalCronExpression:data.flushIntervalCronExpression == null ? '' : data.flushIntervalCronExpression
         }
-        console.log(loggerData);
-        const response = await axios.post('http://localhost/createlogger',{
-            body: loggerData
-        }).then(res => res.data).catch(err => console.log(err));
+        try {
+            var status: any = null;
+            var msg: string = "";
+            const response = await axios.post(
+                'http://localhost:8500/api/v1/logger/create-logger', loggerData, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'API_TYPE': 'logger',
+                    }
+                }
+            ).then(res => {
+                status = res.status;
+                msg = res.data.msg.toString();
+                console.log(res.data);
+            }).catch(err => console.log(err));
 
-        console.log(response);
+            if (status === 201) {
 
-        toast({
-            title: 'Success',
-            description: 'Logger Created Successfully',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
-            position: 'bottom-left'
-        });
+                toast({
+                    title: 'Success',
+                    description: 'Logger Created Successfully',
+                    status: 'success',
+                    duration: 200,
+                    isClosable: true,
+                    position: 'bottom-left'
+                });
+                // closeDrawer();
+                // setTimeout(() => {
+                //     router.reload();
+                // }, 200);
+            }
+            else {
+                toast({
+                    title: 'Try Entering Valid Data',
+                    description: msg,
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                    position: 'bottom-left'
+                });
+                //closeDrawer();
+            }
+        }
+        catch (e) {
+            toast({
+                title: 'Error',
+                description: e.message,
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: 'bottom-left'
+            }
+            );
+        }
         }
 
 

@@ -1,4 +1,4 @@
-import { log } from "../../Shared/deps.ts";
+import  logging  from "../../Shared/logsHandler.ts";
 import {
   SHINEWEBSOCKETHOST,
   SHINEWEBSOCKETPORT,
@@ -9,7 +9,7 @@ const sendLogToEmailServer = (data:any) => {
     `ws://${SHINEWEBSOCKETHOST}:${SHINEWEBSOCKETPORT}/wss?clientName=sendEmailServer`,
   );
   websocket.onopen = () => {
-    log.info(`Log Created`);
+    logging.info(`Log Created`);
     websocket.send(JSON.stringify({
       channel: "sendEmailServer",
       message: data,
@@ -17,10 +17,10 @@ const sendLogToEmailServer = (data:any) => {
     websocket.close();
   };
   websocket.onmessage = (m) => {
-    log.info(m.data);
+    logging.info(m.data);
   };
   websocket.onclose = () => {
-    log.info("SendEmailServer Client Connection closed");
+    logging.info("SendEmailServer Client Connection closed");
   };
 };
 

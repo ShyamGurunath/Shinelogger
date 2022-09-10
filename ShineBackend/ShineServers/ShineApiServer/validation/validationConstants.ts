@@ -13,5 +13,5 @@ const bodyKeysLogger = [
   "emailFrom",
   "loggerName",
 ];
-const bodyKeysLog = ["loggerName", "logmessage", "logLevel"];
+const bodyKeysLog = ["loggerName", "logmessage", "logLevel","additionalInfo"];
 export { bodyKeysLog, bodyKeysLogger, levels };

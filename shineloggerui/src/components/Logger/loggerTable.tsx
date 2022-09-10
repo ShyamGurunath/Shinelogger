@@ -12,7 +12,7 @@ const LoggerTable = ({data}:any ) => {
                             <motion.div whileHover={{
                                 position: 'relative',
                                 zIndex: 1,
-                                background: 'lightgray',
+                                border: '1px solid white',
                                 scale: 1.2,
                                 transition: {
                                     duration: .2

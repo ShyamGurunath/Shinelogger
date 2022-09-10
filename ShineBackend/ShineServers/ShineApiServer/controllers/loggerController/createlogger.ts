@@ -23,6 +23,7 @@ const createlogger = async (ctx: RouterContext) => {
       const logger = await db!.collection(LOGGERCOLLECTION).findOne({
         loggerName: x.loggerName,
       });
+      console.log("Breakpoint 3");
       if (logger) {
         ctx.response.status = 400;
         ctx.response.body = {

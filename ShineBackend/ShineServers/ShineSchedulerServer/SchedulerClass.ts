@@ -1,5 +1,5 @@
 import { Cron } from "../Shared/deps.ts";
-import { log } from "../Shared/deps.ts";
+import  logging  from "../Shared/logsHandler.ts";
 
 const Schedulerlist = new Map<string, Cron>();
 
@@ -23,23 +23,23 @@ class SchedulerClass {
   cronOperation = async () => {
     try {
       const response = await fetch(
-        `http://shine_api_gateway/flushlogs?loggerName=${this.classKey}`,
+        `http://shine_api_gateway:8502/flushlogs?loggerName=${this.classKey}`,
         {
           method: "DELETE",
         },
       );
       const data = await response.json();
       if (response.status == 200) {
-        log.info(
+        logging.info(
           `${data.data} - ${data.msg} for ${this.classKey} at ${new Date()} `,
         );
       } else {
-        log.error(
+        logging.error(
           `${data.data} - ${data.msg} for ${this.classKey} at ${new Date()} `,
         );
       }
     } catch (err) {
-      log.error(err.message);
+      logging.error(err.message);
     }
   };
 }
@@ -48,14 +48,14 @@ const enrollFlusher = async (classKey: string, cronExpression: string) => {
   const scheduler = new SchedulerClass(classKey, cronExpression);
   const cronjob: Cron = await scheduler.createCronJob(cronExpression);
   Schedulerlist.set(classKey, cronjob);
-  log.info(`Enrolled flusher for ${classKey} at ${new Date()} `);
+  logging.info(`Enrolled flusher for ${classKey} at ${new Date()} `);
 };
 
 const removeFlusher = async (classKey: string) => {
   const scheduler = Schedulerlist.get(classKey);
   await scheduler!.stop();
   Schedulerlist.delete(classKey);
-  log.info(`Removed flusher for ${classKey} at ${new Date()} `);
+  logging.info(`Removed flusher for ${classKey} at ${new Date()} `);
 };
 
 const updateFlusher = async (classKey: string, cronExpression: string) => {
@@ -69,7 +69,7 @@ const enrollFlusherAtStart = async () => {
   // get api call to get all the schedulers
   try {
     const url =
-      `http://shine_api_gateway/getloggers`;
+      `http://shine_api_gateway:8502/getloggers`;
     const response = await fetch(url, {
       method: "GET",
     });
@@ -79,7 +79,7 @@ const enrollFlusherAtStart = async () => {
         for (const logger of data.data) {
           if (logger.isFlushLogs) {
             if(Schedulerlist.get(logger.loggerName) == null){
-              log.info(
+              logging.info(
                   `Enrolling flusher for ${logger.loggerName} at ${new Date()} `,
               );
               await enrollFlusher(
@@ -89,14 +89,14 @@ const enrollFlusherAtStart = async () => {
 
             }
             else {
-              log.info(`Logger ${logger.loggerName} already Exists, Skipping !`)
+              logging.info(`Logger ${logger.loggerName} already Exists, Skipping !`)
             }
           }
         }
       }
     }
   } catch (err) {
-    log.error(err.message);
+    logging.error(err.message);
   }
 };
 

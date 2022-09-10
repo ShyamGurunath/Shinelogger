@@ -38,26 +38,28 @@ const createlog = async (ctx: RouterContext) => {
         };
         await logcollection.insertOne(log);
         await sendLogToWebSocketServer(log);
-        logger.isRollingFile
-          ? await saveLogsToRollingFile(
-            x.loggerName,
-            JSON.stringify(log),
-            logger.rollingLogDirectorypath!,
-          )
-          : null;
-        if (logger.isEmail && logger.emailLogLevel === x.logLevel) {
-          log.emailFrom = logger.emailFrom;
-          log.emailFromPassword = logger.emailFromPassword;
-          log.emailToPrimary = logger.emailToPrimary;
-          log.emailToSecondary = logger.emailToSecondary;
-          log.emailLogLevel = logger.emailLogLevel;
-          await sendLogToEmailServer(JSON.stringify(log));
-        }
+          logger.isRollingFile
+              ? await saveLogsToRollingFile(
+                  x.loggerName,
+                  JSON.stringify(log),
+                  logger.rollingLogDirectorypath!,
+              )
+              : null;
+
+          if (logger.isEmail && logger.emailLogLevel === x.logLevel) {
+            log.emailFrom = logger.emailFrom;
+            log.emailFromPassword = logger.emailFromPassword;
+            log.emailToPrimary = logger.emailToPrimary;
+            log.emailToSecondary = logger.emailToSecondary;
+            log.emailLogLevel = logger.emailLogLevel;
+            await sendLogToEmailServer(JSON.stringify(log));
+          }
         ctx.response.status = 201;
         ctx.response.body = {
-          msg: "Log Saved successfully",
-          data: log,
+          msg: "Log created",
+          data: log
         };
+        return;
       }
     }
   } catch (error) {

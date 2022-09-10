@@ -26,22 +26,60 @@ const LoggerCard = ({ title,desc,...rest }:{title:string,desc:string}) => {
     const router = useRouter()
 
     const onDelete = async () => {
-            const response = await axios.delete(`http://localhost/deletelogger?loggerName=${title}`).then(res => {
-                console.log(res.data);
-                return res.data
-            }).catch(err => console.log(err));
+        try {
+            var msg : string = "";
+            var status : any = null;
+            const response = await axios.delete(`http://localhost:8500/api/v1/logger/delete-logger/${title}`).then(res => {
+                return {
+                    data: res.data.msg.toString(),
+                    status: res.status
+                };
+            }).then(data => {
+                msg = data.data;
+                status = data.status;
+            }).catch(err => {
+                console.log(err);
+            });
+
             console.log(response);
 
+
+            if (status === 200) {
                 toast({
                     title: 'Success',
-                    description: 'Logger Deleted Successfully',
+                    description: msg,
                     status: 'success',
+                    duration: 1000,
+                    isClosable: true,
+                    position: 'bottom-left'
+                });
+                onClose();
+                setTimeout(() => {
+                    router.reload();
+                }, 1000);
+            } else {
+                toast({
+                    title: 'Error',
+                    description: msg,
+                    status: 'error',
                     duration: 5000,
                     isClosable: true,
                     position: 'bottom-left'
                 });
-
-                window.location.reload();
+                onClose();
+            }
+        }
+        catch (e) {
+            toast({
+                title: 'Error',
+                description: e.message,
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: 'bottom-left'
+            }
+            );
+        }
 
     }
 
@@ -50,15 +88,16 @@ const LoggerCard = ({ title,desc,...rest }:{title:string,desc:string}) => {
     }
 
     const onView = async () => {
+        console.log(title);
         router.push(`/logger/${title}`)
     }
 
   return (
 
       <>
-      <Box p={10} shadow='md' borderWidth='2px' {...rest} onClick={onView}>
-        <Heading fontSize='xl'>{title}</Heading>
-          <p className="overflow-hidden truncate w-80 pt-2 pb-2">{desc}</p>
+      <Box p={10} shadow='md' borderWidth='2px' {...rest} width={'300px'}>
+        <Heading fontSize='xl' onClick={onView} className="cursor-pointer">{title}</Heading>
+          <p className="overflow-hidden truncate w-50  pt-2 pb-2">{desc}</p>
          <IconButton aria-label='EditIcon' icon={<EditIcon  color="orange" boxSize={5} />} className="mr-2 mt-2" />
           <IconButton aria-label='DeleteIcon' onClick={onOpen} icon={<DeleteIcon  color="red" boxSize={5} />}  className="mt-2" />
       </Box>

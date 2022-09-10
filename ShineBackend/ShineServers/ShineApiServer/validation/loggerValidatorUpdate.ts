@@ -12,7 +12,7 @@ const loggervalidatorupdate = (body:any) => {
   }
   if (
     body.isEmail && body.isEmail == true &&
-    (!body.emailLogLevel || !body.emailToPrimary || !body.emailToSecondary ||
+    (!body.emailLogLevel || !body.emailToPrimary  ||
       !body.emailFromPassword || !body.emailFrom)
   ) {
     return {

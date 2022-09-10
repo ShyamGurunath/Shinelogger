@@ -27,12 +27,12 @@ const logvalidatorcreate = (body:any) => {
   }
   if (
     body.isEmail && body.isEmail == true &&
-    (!body.emailLogLevel || !body.emailToPrimary || !body.emailToSecondary ||
+    (!body.emailLogLevel || !body.emailToPrimary ||
       !body.emailFromPassword || !body.emailFrom)
   ) {
     return {
       msg:
-        "Missing attributes from the Array [emailLogLevel, emailToPrimary,emailToSecondary, emailFrom, emailFromPassword]",
+        "Missing attributes from the Array [emailLogLevel, emailToPrimary, emailFrom, emailFromPassword]",
       status: 400,
     };
   }

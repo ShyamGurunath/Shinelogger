@@ -4,5 +4,5 @@ export default interface Log {
   logmessage: string;
   logLevel: string;
   logTimeStamp?: Date;
-  additionalInfo?: string;
+  additionalInfo?: object;
 }

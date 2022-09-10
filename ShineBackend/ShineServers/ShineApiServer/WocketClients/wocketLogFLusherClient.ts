@@ -1,4 +1,4 @@
-import { log } from "../../Shared/deps.ts";
+import  logging  from "../../Shared/logsHandler.ts";
 import {
   SHINEWEBSOCKETHOST,
   SHINEWEBSOCKETPORT,
@@ -9,7 +9,7 @@ const sendLoggerToLogFlusherServer = (data:any) => {
     `ws://${SHINEWEBSOCKETHOST}:${SHINEWEBSOCKETPORT}/wss?clientName=logFlusher`,
   );
   websocket.onopen = () => {
-    log.info(`LogFlusherClient: Client connected to server`);
+    logging.info(`LogFlusherClient: Client connected to server`);
     websocket.send(JSON.stringify({
       channel: "logFlusher",
       message: data,
@@ -17,7 +17,7 @@ const sendLoggerToLogFlusherServer = (data:any) => {
     websocket.close();
   };
   websocket.onclose = () => {
-    log.info("logFlusher Client Connection closed");
+    logging.info("logFlusher Client Connection closed");
   };
 };
 

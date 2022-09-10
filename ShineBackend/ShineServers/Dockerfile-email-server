@@ -11,6 +11,8 @@ COPY Shared/constants.ts .
 
 COPY Shared/cipher.ts .
 
+COPY Shared/logsHandler.ts .
+
 
 RUN deno cache deps.ts
 

@@ -4,15 +4,16 @@ import {
   mkdirSync,
   writeFileSync,
 } from "../../Shared/deps.ts";
+import logging  from "../../Shared/logsHandler.ts";
 
-const saveLogsToRollingFile = (
+const saveLogsToRollingFile = async (
   loggerName: string,
   log: string,
   dirpath: string,
 ) => {
   // check if directory exists
   if (!existsSync(dirpath)) {
-    console.log(`${dirpath} does not exist. Creating directory to save logs`);
+    logging.warning(`${dirpath} does not exist. Creating directory to save logs`);
     mkdirSync(dirpath);
   }
   const date = new Date();
@@ -20,11 +21,12 @@ const saveLogsToRollingFile = (
   const filepath =
     `${dirpath}/${loggerName}-${date.getFullYear()}-${date.getMonth()}-${date.getDate()}.log`;
   if (!existsSync(filepath)) {
-    console.log(`${filepath} does not exist. Creating file to save logs`);
+    logging.warning(`${filepath} does not exist. Creating file to save logs`);
     writeFileSync(filepath, "");
   }
   // append log to file
   appendFileSync(filepath, log);
+  logging.info(`Log saved to ${filepath}`);
 };
 
 export default saveLogsToRollingFile;

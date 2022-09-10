@@ -1,6 +1,12 @@
 FROM denoland/deno:alpine-1.24.3
 
 
+## Add the wait script to the image
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+
+RUN chmod +x /wait
+
+
 WORKDIR /shinelogflusherserver/Shared
 
 # Cache the dependencies as a layer (the following two steps are re-run only when deps.ts is modified).
@@ -8,6 +14,8 @@ WORKDIR /shinelogflusherserver/Shared
 COPY Shared/deps.ts .
 
 COPY Shared/constants.ts .
+
+COPY Shared/logsHandler.ts .
 
 
 RUN deno cache deps.ts
@@ -20,4 +28,4 @@ ADD ShineSchedulerServer .
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
 RUN deno cache logsFlusherServer.ts
 
-CMD ["run", "--allow-net","--allow-env","--allow-read","--allow-write", "logsFlusherServer.ts"]
+CMD /wait && deno run --allow-net --allow-read --allow-env --allow-write  logsFlusherServer.ts

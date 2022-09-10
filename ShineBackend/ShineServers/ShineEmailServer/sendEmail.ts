@@ -1,13 +1,13 @@
 import { SmtpClient } from "../Shared/deps.ts";
 import { isOnline } from "../Shared/deps.ts";
-import { log } from "../Shared/deps.ts";
+import  logging  from "../Shared/logsHandler.ts";
 import {decrypt} from "../Shared/cipher.ts";
 
 const sendEmail = async (data:any) => {
   try {
     const isInternetConnected = await isOnline();
     if (!isInternetConnected) {
-      log.info("No internet connection, cannot send email");
+      logging.info("No internet connection, cannot send email");
       return {
         msg: "No internet connection, cannot send email",
       };
@@ -22,7 +22,7 @@ const sendEmail = async (data:any) => {
       password: await decrypt(data.emailFromPassword),
     };
 
-    log.info(connectconfig);
+    logging.info(connectconfig);
 
     await client.connectTLS(connectconfig);
     // send the email
@@ -48,8 +48,8 @@ const sendEmail = async (data:any) => {
         to: data.emailToSecondary,
         subject: "ShineLogger Bot " + "- LogLevel " + data.emailLogLevel +
           " Reached",
-        content: "<h2>Hello from ShineLogger Bot,</h2><br><br>" +
-            "<h4>This is a message from the ShineLogger Bot.</h4><br><br>" +
+        content: "<h2>Hello from ShineLogger Bot,</h2><br>" +
+            "<h4>This is a message from the ShineLogger Bot.</h4><br>" +
             "The log level " + data.emailLogLevel + " has been reached.<br><br>" +
             `This loggerName - ${data.loggerName} <br><br>` +
             "The log level is " + data.logLevel + "<br><br>" + "The Logmessage is " +
